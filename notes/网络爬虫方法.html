@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LHH的网络爬虫笔记</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* CSS 样式设计 */
+        :root {
+            --primary-color: #2563eb;
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+            --code-bg: #1e1e1e;
+            --card-bg: #ffffff;
+            --accent-color: #10b981;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+
+        h1 { margin: 0; font-size: 2.5rem; }
+        .subtitle { opacity: 0.8; margin-top: 10px; }
+
+        .section {
+            background: var(--card-bg);
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-left: 5px solid var(--primary-color);
+            padding-left: 15px;
+            margin-top: 0;
+        }
+
+        .step-badge {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+
+        /* 代码块样式 */
+        pre {
+            background: var(--code-bg);
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            position: relative;
+        }
+
+        code { font-family: inherit; }
+
+        .comment { color: #6a9955; }
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .func { color: #dcdcaa; }
+
+        /* 提示框 */
+        .warning {
+            background-color: #fff7ed;
+            border-left: 5px solid #f97316;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        ul { padding-left: 20px; }
+        li { margin-bottom: 8px; }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+    </style>
+</head>
+<body class="note-body">
+
+     <!-- 返回主页按钮 -->
+    <a href="../index.html" class="back-btn">← 返回索引</a>
+    
+<div class="container">
+    <header>
+        <h1>网络爬虫</h1>
+        <p class="subtitle">from lhh</p>
+    </header>
+
+    <main>
+        <!-- 核心工具 -->
+        <div class="section">
+            <h2>1. 主要用到的库</h2>
+            <p>在开始之前，请确保已安装以下 Python 库：</p>
+            <ul>
+                <li><strong>requests</strong>: 负责发送 HTTP 请求，获取网页源代码。</li>
+                <li><strong>BeautifulSoup</strong>: 负责解析 HTML，提取特定标签内容。</li>
+                <li><strong>pandas</strong>: 负责将抓取到的数据结构化并保存。</li>
+            </ul>
+            <pre><code>pip install requests beautifulsoup4 pandas</code></pre>
+        </div>
+
+        <!-- 基本流程 -->
+        <div class="section">
+            <span class="step-badge">Step-by-Step</span>
+            <h2>2. 基本代码流程</h2>
+            <pre><code><span class="keyword">import</span> requests
+<span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup
+<span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+
+<span class="comment"># 1. 发送请求</span>
+url = <span class="string">"https://example.com/news"</span>
+headers = {<span class="string">"User-Agent"</span>: <span class="string">"Mozilla/5.0..."</span>}
+response = requests.<span class="func">get</span>(url, headers=headers)
+
+<span class="comment"># 2. 解析网页内容</span>
+soup = <span class="func">BeautifulSoup</span>(response.text, <span class="string">"html.parser"</span>)
+titles = soup.<span class="func">find_all</span>(<span class="string">"h2"</span>) <span class="comment"># 查找所有h2标签</span>
+
+<span class="comment"># 3. 提取并清洗数据</span>
+results = [t.text.<span class="func">strip</span>() <span class="keyword">for</span> t <span class="keyword">in</span> titles]
+
+<span class="comment"># 4. 使用 Pandas 保存</span>
+df = pd.<span class="func">DataFrame</span>(results, columns=[<span class="string">"标题"</span>])
+df.<span class="func">to_csv</span>(<span class="string">"data.csv"</span>, index=<span class="keyword">False</span>)</code></pre>
+        </div>
+
+        <!-- 注意事项 -->
+        <div class="section">
+            <h2>3. 爬虫注意事项</h2>
+
+            <ul>
+                <li><strong>检查 Robots.txt：</strong> 访问 <code>网站/robots.txt</code> 看看给不给爬。</li>
+                <li><strong>设置 User-Agent：</strong> 别以 Python 的默认身份去访问，要伪装成浏览器。</li>
+                <li><strong>控制频率：</strong> 使用 <code>time.sleep()</code>，避免给目标服务器造成负担。</li>            
+                <div class="warning">
+                    <strong>⚠️ 记得用time.sleep()：</strong> 不用的话跟DDOS攻击没区别，不要把人家服务器搞宕机了。
+                </div>
+                <li><strong>隐私和版权：</strong> 爬虫之前看看有没有版权保护声明，还有别把别人的个人隐私给爬了。</li>
+            </ul>
+        </div>
+
+        <!-- 进阶方向 -->
+        <div class="section">
+            <h2>4. 进阶与拓展</h2>
+            <p>当 <code>requests</code> 搞不定时，你可以尝试：</p>
+            <ul>
+                <li><strong>Selenium / Playwright：</strong> 模拟真实浏览器行为，处理动态加载（JavaScript）。</li>
+                <li><strong>API 分析：</strong> 观察 Network 面板，直接抓取后台 JSON 接口。</li>
+                <li><strong>Scrapy：</strong> 专业的大型爬虫框架，适合大规模数据采集。</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2026 Martin's Learning Notes | Created for Web Scraping Study
+    </footer>
+</div>
+
+</body>
+</html>

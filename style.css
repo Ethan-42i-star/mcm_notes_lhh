@@ -1,0 +1,142 @@
+/* 全局基础设置 */
+:root {
+    /* --- 在这里更换背景图路径 --- */
+    --bg-image: url('bg.jpg'); 
+    /* 如果没有图，下面会自动显示纯色背景 */
+    --primary-color: #2563eb;
+    --card-bg: rgba(255, 255, 255, 0.9);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    color: #1e293b;
+    min-height: 100vh;
+}
+
+/* 背景逻辑 */
+.home-body {
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-color: #f8fafc; /* 没图时的后备白色 */
+}
+
+/* 遮罩，防止背景太花导致看不清字 */
+.bg-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255, 255, 255, 0.4); /* 0.4是透明度，想要背景亮一点就调小 */
+    z-index: 0;
+}
+
+.main-wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 20px;
+}
+
+/* 标题区 */
+.home-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.home-header h1 {
+    font-size: 3.5rem;
+    color: #0f172a;
+    letter-spacing: -1px;
+    margin-bottom: 10px;
+}
+
+.home-header p {
+    font-size: 1.2rem;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* 索引块块网格 */
+.index-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+/* 每一个小块块 */
+.nav-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 30px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px); /* 磨砂玻璃效果 */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.nav-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    background: white;
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    margin-right: 20px;
+}
+
+.card-info h3 {
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+    color: #1e293b;
+}
+
+.card-info p {
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+/* 更多笔记的虚线块 */
+.plus-card {
+    border: 2px dashed rgba(0,0,0,0.1);
+    background: rgba(255,255,255,0.4);
+}
+
+.home-footer {
+    text-align: center;
+    margin-top: 100px;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+/* 手机适配 */
+@media (max-width: 768px) {
+    .home-header h1 { font-size: 2.5rem; }
+    .main-wrapper { padding: 40px 20px; }
+}
+
+/* 笔记页面专用样式 */
+.note-body {
+    background: #f1f5f9; /* 笔记页面用清爽的浅灰色 */
+}
+
+.back-btn {
+    position: fixed;
+    top: 20px; left: 20px;
+    text-decoration: none;
+    color: #64748b;
+    font-size: 0.9rem;
+    z-index: 100;
+    padding: 8px 15px;
+    background: white;
+    border-radius: 30px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
