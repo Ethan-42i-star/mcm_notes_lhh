@@ -140,3 +140,59 @@ body {
     border-radius: 30px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
+
+/* 代码块的外层容器，用来定位按钮 */
+.code-container {
+    position: relative;
+    margin: 20px 0;
+}
+
+/* 复制按钮的“整容”样式 */
+.copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    
+    /* 基础外观 */
+    padding: 6px 12px;
+    background-color: #475569; /* 深灰色，很有质感 */
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    
+    /* 字体设置 */
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    
+    /* 动画效果 */
+    transition: all 0.2s ease;
+    outline: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 鼠标悬停时的效果 */
+.copy-btn:hover {
+    background-color: #334155;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+/* 点击时的“按压”感 */
+.copy-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* 为了配合按钮，微调 pre 标签，增加顶部的 padding 防止文字被按钮遮挡 */
+pre {
+    position: relative;
+    padding: 40px 20px 20px !important; /* 顶部留出 40px 给按钮 */
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-x: auto;
+}

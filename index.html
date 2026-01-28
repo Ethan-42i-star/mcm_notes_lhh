@@ -10,49 +10,113 @@
     <div class="main-wrapper">
         <header class="home-header">
             <h1>lhh的美赛笔记</h1>
-            <p>Mathematics, Coding, and Beyond</p>
+            <p>2026 MCM/ICM Study Notes Hub</p>
         </header>
 
         <nav class="index-grid">
-            <!-- 数据预处理板块 - 子板块 1 -->
-            <a href="notes/缺失值处理.html" class="nav-card">
-                <div class="card-icon">🧹</div>
-                <div class="card-info">
-                    <h3>缺失值处理</h3>
-                    <p>均值、中位数、KNN 填充原理与实现</p>
-                </div>
-            </a>
+            <!-- 数据处理：特殊的折叠/二级跳转卡片 -->
+            <div class="nav-card category-card" onclick="toggleSubMenu('data-submenu')">
+             <div class="card-icon">🧹</div>
+              <div class="card-info">
+                  <h3>数据处理</h3>
+                    <p>清洗、标准化、降维...</p>
+               </div>
+                <!-- 点击后显示的子板块 -->
+                <div id="data-submenu" class="submenu">
+                   <a href="notes/缺失值处理.html">· 缺失值处理</a>
+                  <a href="notes/异常值处理.html">· 异常值处理</a>
+               </div>
+           </div>
 
-            <!-- 数据预处理板块 - 子板块 2 -->
-            <a href="notes/异常值处理.html" class="nav-card">
-                <div class="card-icon">🚫</div>
-                <div class="card-info">
-                    <h3>异常值处理</h3>
-                    <p>IQR 准则、3-Sigma 原则与平滑修正</p>
-                </div>
-            </a>
-
-            <!-- 其他预留板块 -->
+            <!-- 2. 评价模型 -->
             <a href="#" class="nav-card">
-                <div class="card-icon">🤖</div>
+                <div class="card-icon">📊</div>
                 <div class="card-info">
                     <h3>评价模型</h3>
-                    <p>TOPSIS, AHP, 熵权法 (待补充)</p>
+                    <p>TOPSIS, AHP, 熵权法</p>
                 </div>
             </a>
 
-            <!-- 爬虫移到最后，加 (拓展) 标记 -->
+            <!-- 3. 分类模型 -->
+            <a href="#" class="nav-card">
+                <div class="card-icon">🏷️</div>
+                <div class="card-info">
+                    <h3>分类模型</h3>
+                    <p>逻辑回归, 决策树, SVM</p>
+                </div>
+            </a>
+
+            <!-- 4. 聚类模型 -->
+            <a href="#" class="nav-card">
+                <div class="card-icon">🧺</div>
+                <div class="card-info">
+                    <h3>聚类模型</h3>
+                    <p>K-Means, DBSCAN, 层次聚类</p>
+                </div>
+            </a>
+
+            <!-- 5. 预测模型 -->
+            <a href="#" class="nav-card">
+                <div class="card-icon">📈</div>
+                <div class="card-info">
+                    <h3>预测模型</h3>
+                    <p>时间序列, 神经网络, 回归分析</p>
+                </div>
+            </a>
+
+            <!-- 6. 数学规划 -->
+            <a href="#" class="nav-card">
+                <div class="card-icon">🧮</div>
+                <div class="card-info">
+                    <h3>数学规划</h3>
+                    <p>线性规划, 整数规划, 动态规划</p>
+                </div>
+            </a>
+
+            <!-- 7. 图论规划 -->
+            <a href="#" class="nav-card">
+                <div class="card-icon">🕸️</div>
+                <div class="card-info">
+                    <h3>图论规划</h3>
+                    <p>最短路径, 最小生成树, 网络流</p>
+                </div>
+            </a>
+
+            <!-- 8. 写作专题 -->
+            <a href="#" class="nav-card">
+                <div class="card-icon">✍️</div>
+                <div class="card-info">
+                    <h3>写作专题</h3>
+                    <p>LaTeX, 绘图规范, 摘要套路</p>
+                </div>
+            </a>
+
+            <!-- 9. 网络爬虫 -->
             <a href="notes/网络爬虫笔记.html" class="nav-card plus-card">
                 <div class="card-icon">🕷️</div>
                 <div class="card-info">
-                    <h3>(拓展) 网络爬虫笔记</h3>
-                    <p>自动化数据采集与 JS 动态解析</p>
+                    <h3>(拓展) 网络爬虫</h3>
+                    <p>数据采集与 API 调用</p>
                 </div>
             </a>
         </nav>
+        
+        <style>
+            /* CSS 关键：隐藏子菜单 */
+            .submenu { display: none; margin-top: 15px; background: #f8fafc; border-radius: 10px; padding: 10px; }
+            .submenu a { display: block; padding: 8px; color: #2563eb; text-decoration: none; font-size: 0.9rem; border-bottom: 1px solid #e2e8f0; }
+            .category-card { cursor: pointer; display: block; } /* 让卡片支持点击 */
+        </style>
+
+        <script>
+            function toggleSubMenu(id) {
+               const menu = document.getElementById(id);
+               menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        }
+        </script>
 
         <footer class="home-footer">
-            &copy; 2026 lhh's Learning Hub | Created for MCM/ICM Study
+            &copy; 2026 lhh's Learning Hub | Created for MCM/ICM
         </footer>
     </div>
 </body>
