@@ -15,16 +15,28 @@
 
         <nav class="index-grid">
             <!-- 数据处理：特殊的折叠/二级跳转卡片 -->
-            <div class="nav-card category-card" onclick="toggleSubMenu('data-submenu')">
-             <div class="card-icon">🧹</div>
-              <div class="card-info">
-                  <h3>数据处理</h3>
+            <div class="nav-card category-card" onclick="toggleSubMenu('data-menu')">
+                <div class="card-icon">🧹</div>
+                <div class="card-info">
+                    <h3>数据处理</h3>
                     <p>清洗、标准化、降维...</p>
                </div>
-                <!-- 点击后显示的子板块 -->
-                <div id="data-submenu" class="submenu">
-                   <a href="notes/缺失值处理.html">· 缺失值处理</a>
-                  <a href="notes/异常值处理.html">· 异常值处理</a>
+                <!-- 点击后显示的子板块 -->   
+                <div id="data-menu" class="submenu">
+                    <a href="notes/缺失值处理.html"  class="submenu-btn">缺失值处理</a>
+                    <a href="notes/异常值处理.html" class="submenu-btn">异常值处理</a>
+                    <a href="notes/重复值处理.html" class="submenu-btn">重复值处理</a>
+                    <a href="notes/数据标准化.html" class="submenu-btn">数据标准化</a>
+                    <a href="notes/极差标准化.html" class="submenu-btn">极差标准化</a>
+                    <a href="notes/Z-score标准化.html" class="submenu-btn">Z-score标准化</a>
+                    <a href="notes/顺序编码.html" class="submenu-btn">顺序编码</a>
+                    <a href="notes/标签编码.html" class="submenu-btn">标签编码</a>
+                    <a href="notes/独热编码.html" class="submenu-btn">独热编码</a>
+                    <a href="notes/特征构造.html" class="submenu-btn">特征构造</a>
+                    <a href="notes/特征选择-相关性分析.html" class="submenu-btn">特征选择-相关性分析</a>
+                    <a href="notes/特征选择-方差分析.html" class="submenu-btn">特征选择-方差分析</a>
+                    <a href="notes/特征选择-卡方检验.html" class="submenu-btn">特征选择-卡方检验</a>
+                    <a href="notes/特征降维-PCA降维.html" class="submenu-btn">特征降维-PCA降维</a>
                </div>
            </div>
 
@@ -100,19 +112,37 @@
                 </div>
             </a>
         </nav>
-        
-        <style>
-            /* CSS 关键：隐藏子菜单 */
-            .submenu { display: none; margin-top: 15px; background: #f8fafc; border-radius: 10px; padding: 10px; }
-            .submenu a { display: block; padding: 8px; color: #2563eb; text-decoration: none; font-size: 0.9rem; border-bottom: 1px solid #e2e8f0; }
-            .category-card { cursor: pointer; display: block; } /* 让卡片支持点击 */
-        </style>
 
         <script>
-            function toggleSubMenu(id) {
-               const menu = document.getElementById(id);
-               menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        function toggleSubMenu(id) {
+            const menu = document.getElementById(id);
+            // 找到菜单的“爷爷”（也就是 nav-card）
+            // 注意：如果你改过HTML结构，这里可能需要改。
+            // 最稳妥的写法是使用 closest 方法，它会自动往上找最近的卡片
+            const card = menu.closest('.nav-card'); 
+            
+            // 切换菜单的激活状态
+            menu.classList.toggle('active');
+            
+            // 切换卡片的高层级状态（解决被挡住的核心）
+            if (card) {
+                card.classList.toggle('card-active');
+            }
         }
+
+        // 进阶功能：点击页面其他地方，自动收起菜单
+        document.addEventListener('click', function(event) {
+            const isClickInside = event.target.closest('.category-card');
+            
+            // 如果点击的不是菜单卡片内部，就关闭所有菜单
+            if (!isClickInside) {
+                const allMenus = document.querySelectorAll('.submenu');
+                const allCards = document.querySelectorAll('.nav-card');
+                
+                allMenus.forEach(m => m.classList.remove('active'));
+                allCards.forEach(c => c.classList.remove('card-active'));
+            }
+        });
         </script>
 
         <footer class="home-footer">
