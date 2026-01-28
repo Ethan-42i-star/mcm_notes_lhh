@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <link rel="stylesheet" href="../style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>1. 缺失值处理 - lhh的美赛笔记</title>
@@ -63,7 +64,7 @@
 
         <!-- 论文金句 -->
         <div class="card">
-            <h2>二、 论文写作素材</h2>
+            <h2>二、 论文可以这样写</h2>
             <div class="quote-box">
                 “考虑到数据分布的稳定性，我们初步采用了均值填充；同时为了验证鲁棒性，我们也对比了 KNN 填充的效果...”
             </div>
@@ -77,13 +78,18 @@
 
         <!-- 代码部分 -->
         <div class="card">
-            <h2>三、 Python 实现代码</h2>
-            <pre>
+            <h2>三、 Python 完整实现代码</h2>
+            
+            <!-- 用 code-container 包裹按钮和 pre -->
+            <div class="code-container">
+                <button class="copy-btn" onclick="copyCode(this)">复制代码</button>
+                <pre>
 # 1.缺失值处理.py
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.impute import KNNImputer
+
 
 # 创建示例数据
 data = pd.DataFrame({
@@ -92,6 +98,7 @@ data = pd.DataFrame({
     'C': [1, 2, 3, 4, 5]
 })
 
+# 保存原始数据
 original_data = data.copy()
 
 # 显示缺失值情况
@@ -99,7 +106,10 @@ missing_info = data.isnull().sum()
 print("缺失值情况：")
 print(missing_info)
 
-# --- 以下为 KNN (k近邻) 填充 ---
+# # 以下为均值填充
+# filled_data = data.fillna(data.mean())
+
+#以下为knn（k近邻）填充
 # 1. 创建填充器，n_neighbors=2 表示参考最近的两个邻居
 imputer = KNNImputer(n_neighbors=2)
 
@@ -112,8 +122,37 @@ filled_data = pd.DataFrame(filled_array, columns=data.columns)
 # 保存结果
 filled_data.to_csv('C:/Users/Martin/Desktop/1.数据预处理笔记/1.缺失值处理_结果.csv', index=False)
 
-# 设置可视化 (此处省略绘图部分，详见原.py文件)
+# 设置中文显示
+plt.rcParams['font.sans-serif'] = ['SimHei'] # 使用 Windows 自带的黑体
+plt.rcParams['axes.unicode_minus'] = False# 解决负号 '-' 显示为方块的问题
+
+# 可视化对比
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+
+# 原始数据可视化
+axes[0].set_title('原始数据')
+axes[0].imshow(original_data.isnull(), cmap='gray', aspect='auto')
+axes[0].set_xticks(range(original_data.shape[1]))
+axes[0].set_xticklabels(original_data.columns)
+axes[0].set_yticks(range(original_data.shape[0]))
+
+# 处理后数据可视化
+axes[1].set_title('均值填充后数据')
+axes[1].imshow(filled_data.isnull(), cmap='gray', aspect='auto')
+axes[1].set_xticks(range(filled_data.shape[1]))
+axes[1].set_xticklabels(filled_data.columns)
+axes[1].set_yticks(range(filled_data.shape[0]))
+
+plt.tight_layout()
+plt.savefig('C:/Users/Martin/Desktop/1.数据预处理笔记/案例结果/1.缺失值处理_对比图.png')
+plt.close()
+
+print("\n原始数据：")
+print(original_data)
+print("\n均值填充后数据：")
+print(filled_data)
             </pre>
+            </div>
         </div>
 
         <!-- 图像展示 -->
@@ -129,5 +168,6 @@ filled_data.to_csv('C:/Users/Martin/Desktop/1.数据预处理笔记/1.缺失值�
             </div>
         </div>
     </div>
+    <script src="script.js"></script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <link rel="stylesheet" href="../style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2. 异常值处理 - lhh的美赛笔记</title>
@@ -57,35 +58,142 @@
         </div>
 
         <div class="card">
-            <h2>二、 论文写作金句</h2>
+            <h2>二、 论文可以这样写</h2>
             <div class="quote-box">
                 “为了增强数据的可靠性，我们采用了双重准则检测法（IQR 与 3σ）。针对识别出的异常样本，我们并没有直接剔除，而是采用了中位数替换法进行修正。这样做既保留了样本容量，又有效地降低了噪声对后续回归/分类模型的影响，增强了模型的鲁棒性。”
             </div>
         </div>
 
         <div class="card">
-            <h2>三、 Python 实现代码</h2>
-            <pre>
+            <h2>三、 Python 完整实现代码</h2>
+            
+            <!-- 用 code-container 包裹按钮和 pre -->
+            <div class="code-container">
+                <button class="copy-btn" onclick="copyCode(this)">复制代码</button>
+                <pre>
 # 2.异常值处理.py
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-# 1. 计算统计量
+# 创建示例数据
+np.random.seed(42)
+data = pd.DataFrame({
+    'value': np.concatenate([np.random.normal(100, 10, 100), np.array([50, 150, 30, 170])])
+})
+
+# 保存原始数据
+original_data = data.copy()
+
+# 计算统计量
+mean_val = data['value'].mean()
+std_val = data['value'].std()
 Q1 = data['value'].quantile(0.25)
 Q3 = data['value'].quantile(0.75)
 IQR = Q3 - Q1
 
-# 2. 确定范围
+# 两种检测方法的异常值范围
+# 1. IQR方法
 lower_bound_iqr = Q1 - 1.5 * IQR
 upper_bound_iqr = Q3 + 1.5 * IQR
 
-# 3. 处理异常值：用中位数替换
-median_value = data['value'].median()
-data.loc[(data['value'] < lower_bound_iqr) | (data['value'] > upper_bound_iqr), 'value'] = median_value
+# 2. 3 Sigma方法
+lower_bound_sigma = mean_val - 3 * std_val
+upper_bound_sigma = mean_val + 3 * std_val
 
-# 4. 保存与可视化 (代码略)
-            </pre>
+# 标记异常值
+data['is_outlier_iqr'] = (data['value'] < lower_bound_iqr) | (data['value'] > upper_bound_iqr)
+data['is_outlier_sigma'] = (data['value'] < lower_bound_sigma) | (data['value'] > upper_bound_sigma)
+data['is_outlier'] = data['is_outlier_iqr'] | data['is_outlier_sigma']
+
+# 处理异常值：用中位数替换
+median_value = data['value'].median()
+data.loc[data['is_outlier'], 'value'] = median_value
+
+# 保存文件
+save_path = 'C:/Users/Martin/Desktop/1.数据预处理笔记/'
+
+data.to_csv(save_path + '2.异常值处理_结果.csv', index=False)
+
+# 适配 Windows 中文字体 ---
+plt.rcParams['font.sans-serif'] = ['SimHei']  # 改为黑体
+plt.rcParams['axes.unicode_minus'] = False  # 正常显示负号
+
+# 可视化对比
+fig = plt.figure(figsize=(16, 12))
+
+# 1. 原始数据分布与异常值检测范围
+ax1 = fig.add_subplot(2, 2, 1)
+ax1.set_title('原始数据分布与异常值检测范围')
+ax1.hist(data['value'], bins=20, alpha=0.7, color='#66b3ff', label='数据分布')
+ax1.axvline(lower_bound_iqr, color='red', linestyle='--', label=f'IQR下限: {lower_bound_iqr:.2f}')
+ax1.axvline(upper_bound_iqr, color='red', linestyle='--', label=f'IQR上限: {upper_bound_iqr:.2f}')
+ax1.axvline(lower_bound_sigma, color='green', linestyle='-.', label=f'3σ下限: {lower_bound_sigma:.2f}')
+ax1.axvline(upper_bound_sigma, color='green', linestyle='-.', label=f'3σ上限: {upper_bound_sigma:.2f}')
+ax1.axvline(mean_val, color='blue', linestyle='-', label=f'均值: {mean_val:.2f}')
+ax1.legend()
+ax1.set_ylabel('频数')
+
+# 2. 原始数据箱线图
+ax2 = fig.add_subplot(2, 2, 2)
+ax2.set_title('原始数据箱线图')
+ax2.boxplot(original_data['value'], vert=False)
+ax2.set_xlabel('value')
+# 标记异常值
+outliers_original = original_data[(original_data['value'] < lower_bound_iqr) | (original_data['value'] > upper_bound_iqr)]
+ax2.scatter(outliers_original['value'], [1]*len(outliers_original), color='red', zorder=5, label='异常值')
+ax2.legend()
+
+# 3. 处理后数据分布
+ax3 = fig.add_subplot(2, 2, 3)
+ax3.set_title('异常值处理后数据分布')
+ax3.hist(data['value'], bins=20, alpha=0.7, color='#99ff99', label='处理后分布')
+ax3.axvline(mean_val, color='blue', linestyle='-', label=f'均值: {mean_val:.2f}')
+ax3.legend()
+ax3.set_ylabel('频数')
+ax3.set_xlabel('value')
+
+# 4. 处理后数据箱线图
+ax4 = fig.add_subplot(2, 2, 4)
+ax4.set_title('异常值处理后箱线图')
+ax4.boxplot(data['value'], vert=False)
+ax4.set_xlabel('value')
+
+plt.tight_layout()
+plt.savefig(save_path + '2.异常值处理_对比图.png')
+plt.close()
+
+# 绘制异常值位置对比
+fig, ax = plt.subplots(figsize=(12, 6))
+ax.set_title('异常值位置对比')
+ax.scatter(range(len(original_data)), original_data['value'], alpha=0.7, color='blue', label='原始数据')
+ax.scatter(range(len(data)), data['value'], alpha=0.7, color='green', label='处理后数据')
+# 标记被替换的异常值
+outlier_indices = data[data['is_outlier']].index
+ax.scatter(outlier_indices, original_data.loc[outlier_indices, 'value'], color='red', s=100, label='被替换的异常值')
+ax.legend()
+ax.set_ylabel('value')
+ax.set_xlabel('样本索引')
+plt.tight_layout()
+plt.savefig(save_path + '2.异常值处理_位置对比.png')
+plt.close()
+
+print("\n异常值检测结果：")
+print(f"数据均值: {mean_val:.2f}")
+print(f"数据标准差: {std_val:.2f}")
+print(f"IQR: {IQR:.2f}")
+print(f"\nIQR方法异常值范围: [{lower_bound_iqr:.2f}, {upper_bound_iqr:.2f}]")
+print(f"3 Sigma方法异常值范围: [{lower_bound_sigma:.2f}, {upper_bound_sigma:.2f}]")
+print(f"\nIQR方法检测到 {data['is_outlier_iqr'].sum()} 个异常值")
+print(f"3 Sigma方法检测到 {data['is_outlier_sigma'].sum()} 个异常值")
+print(f"总异常值数量: {data['is_outlier'].sum()}")
+
+print("\n原始数据统计：")
+print(original_data.describe())
+print("\n异常值处理后数据统计：")
+print(data[['value']].describe())
+                </pre>
+            </div>
         </div>
 
         <div class="card">
@@ -100,5 +208,6 @@ data.loc[(data['value'] < lower_bound_iqr) | (data['value'] > upper_bound_iqr), 
             </div>
         </div>
     </div>
+    <script src="script.js"></script>
 </body>
 </html>
